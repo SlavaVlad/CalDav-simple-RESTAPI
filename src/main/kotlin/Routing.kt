@@ -44,7 +44,7 @@ data class ApiResponse<T>(
 fun Application.configureRouting() {
     routing {
         authenticate("calendar-auth") {
-            route("/calendar") {
+            route("/calendar/{calendarId}") {
                 route("/events") {
 
                     // Получение всех событий
@@ -62,9 +62,9 @@ fun Application.configureRouting() {
                             } ?: ""
 
                             // Получаем календарь ID из заголовка CAL_ID
-                            val calendarId = call.request.headers["CAL_ID"] ?: return@get call.respond(
+                            val calendarId = call.parameters["calendarId"] ?: return@get call.respond(
                                 HttpStatusCode.BadRequest,
-                                ApiResponse<String>(success = false, message = "Заголовок CAL_ID обязателен")
+                                ApiResponse<String>(success = false, message = "Не найден параметр calendarId")
                             )
 
                             val dav = Dav(username, password, calendarId)
@@ -113,9 +113,9 @@ fun Application.configureRouting() {
                             } ?: ""
 
                             // Получаем календарь ID из заголовка CAL_ID
-                            val calendarId = call.request.headers["CAL_ID"] ?: return@post call.respond(
+                            val calendarId = call.parameters["calendarId"] ?: return@post call.respond(
                                 HttpStatusCode.BadRequest,
-                                ApiResponse<String>(success = false, message = "Заголовок CAL_ID обязателен")
+                                ApiResponse<String>(success = false, message = "Не найден параметр calendarId")
                             )
 
                             val request = call.receive<CreateEventRequest>()
@@ -180,9 +180,9 @@ fun Application.configureRouting() {
                             } ?: ""
 
                             // Получаем календарь ID из заголовка CAL_ID
-                            val calendarId = call.request.headers["CAL_ID"] ?: return@get call.respond(
+                            val calendarId = call.parameters["calendarId"] ?: return@get call.respond(
                                 HttpStatusCode.BadRequest,
-                                ApiResponse<String>(success = false, message = "Заголовок CAL_ID обязателен")
+                                ApiResponse<String>(success = false, message = "Не найден параметр calendarId")
                             )
 
                             val dav = Dav(username, password, calendarId)
@@ -243,9 +243,9 @@ fun Application.configureRouting() {
                             } ?: ""
 
                             // Получаем календарь ID из заголовка CAL_ID
-                            val calendarId = call.request.headers["CAL_ID"] ?: return@put call.respond(
+                            val calendarId = call.parameters["calendarId"] ?: return@put call.respond(
                                 HttpStatusCode.BadRequest,
-                                ApiResponse<String>(success = false, message = "Заголовок CAL_ID обязателен")
+                                ApiResponse<String>(success = false, message = "Не найден параметр calendarId")
                             )
 
                             val request = call.receive<CreateEventRequest>()
@@ -311,9 +311,9 @@ fun Application.configureRouting() {
                             } ?: ""
 
                             // Получаем календарь ID из заголовка CAL_ID
-                            val calendarId = call.request.headers["CAL_ID"] ?: return@delete call.respond(
+                            val calendarId = call.parameters["calendarId"] ?: return@delete call.respond(
                                 HttpStatusCode.BadRequest,
-                                ApiResponse<String>(success = false, message = "Заголовок CAL_ID обязателен")
+                                ApiResponse<String>(success = false, message = "Не найден параметр calendarId")
                             )
 
                             val dav = Dav(username, password, calendarId)

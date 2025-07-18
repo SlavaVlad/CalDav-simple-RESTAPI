@@ -1,0 +1,621 @@
+openapi: "3.1.0"
+info:
+  title: "CalDav-simple-RESTAPI"
+  description: "Примитивный REST API над CalDav потому что он старый и неудобный, а fancy cool modern REST API лучше"
+  version: "1.0.0"
+servers:
+  - url: "http://localhost:8080"
+    description: "Local"
+paths:
+  /calendar/{calendarId}/events:
+    get:
+      description: "Получение всех событий"
+      parameters:
+        - name: "Authorization"
+          in: "header"
+          required: false
+          schema:
+            type: "string"
+        - name: "calendarId"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+      responses:
+        "400":
+          description: "Bad Request"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiResponse_String"
+              examples:
+                Example#1:
+                  description: ""
+                  value:
+                    success: false
+                    data: "null"
+                    message: "Заголовок CAL_ID обязателен"
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiResponse_List<? extends EventResponse>"
+              examples:
+                Example#1:
+                  description: ""
+                  value:
+                    success: true
+                    data: "null"
+                    message: "null"
+        "500":
+          description: "Internal Server Error"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiResponse_String"
+              examples:
+                Example#1:
+                  description: ""
+                  value:
+                    success: false
+                    data: "null"
+                    message: "null"
+                Example#2:
+                  description: ""
+                  value:
+                    success: false
+                    data: "null"
+                    message: "null"
+    post:
+      description: "Создание нового события"
+      parameters:
+        - name: "Authorization"
+          in: "header"
+          required: false
+          schema:
+            type: "string"
+        - name: "calendarId"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateEventRequest"
+        required: true
+      responses:
+        "400":
+          description: "Bad Request"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiResponse_String"
+              examples:
+                Example#1:
+                  description: ""
+                  value:
+                    success: false
+                    data: "null"
+                    message: "null"
+                Example#2:
+                  description: ""
+                  value:
+                    success: false
+                    data: "null"
+                    message: "Заголовок CAL_ID обязателен"
+        "201":
+          description: "Created"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiResponse_EventResponse"
+              examples:
+                Example#1:
+                  description: ""
+                  value:
+                    success: true
+                    data: "null"
+                    message: "null"
+        "401":
+          description: "Unauthorized"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiResponse_String"
+              examples:
+                Example#1:
+                  description: ""
+                  value:
+                    success: false
+                    data: "null"
+                    message: "null"
+        "403":
+          description: "Forbidden"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiResponse_String"
+              examples:
+                Example#1:
+                  description: ""
+                  value:
+                    success: false
+                    data: "null"
+                    message: "null"
+        "404":
+          description: "Not Found"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiResponse_String"
+              examples:
+                Example#1:
+                  description: ""
+                  value:
+                    success: false
+                    data: "null"
+                    message: "null"
+        "409":
+          description: "Conflict"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiResponse_String"
+              examples:
+                Example#1:
+                  description: ""
+                  value:
+                    success: false
+                    data: "null"
+                    message: "null"
+        "500":
+          description: "Internal Server Error"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiResponse_String"
+              examples:
+                Example#1:
+                  description: ""
+                  value:
+                    success: false
+                    data: "null"
+                    message: "null"
+  /calendar/{calendarId}/events/{uid}:
+    delete:
+      description: "Удаление события"
+      parameters:
+        - name: "uid"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+        - name: "Authorization"
+          in: "header"
+          required: false
+          schema:
+            type: "string"
+        - name: "calendarId"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+      responses:
+        "400":
+          description: "Bad Request"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiResponse_String"
+              examples:
+                Example#1:
+                  description: ""
+                  value:
+                    success: false
+                    data: "null"
+                    message: "null"
+                Example#2:
+                  description: ""
+                  value:
+                    success: false
+                    data: "null"
+                    message: "Заголовок CAL_ID обязателен"
+                Example#3:
+                  description: ""
+                  value:
+                    success: false
+                    data: "null"
+                    message: "UID события не указан"
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiResponse_String"
+              examples:
+                Example#1:
+                  description: ""
+                  value:
+                    success: true
+                    data: "null"
+                    message: "Событие успешно удалено"
+        "401":
+          description: "Unauthorized"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiResponse_String"
+              examples:
+                Example#1:
+                  description: ""
+                  value:
+                    success: false
+                    data: "null"
+                    message: "null"
+        "403":
+          description: "Forbidden"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiResponse_String"
+              examples:
+                Example#1:
+                  description: ""
+                  value:
+                    success: false
+                    data: "null"
+                    message: "null"
+        "404":
+          description: "Not Found"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiResponse_String"
+              examples:
+                Example#1:
+                  description: ""
+                  value:
+                    success: false
+                    data: "null"
+                    message: "null"
+        "500":
+          description: "Internal Server Error"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiResponse_String"
+              examples:
+                Example#1:
+                  description: ""
+                  value:
+                    success: false
+                    data: "null"
+                    message: "null"
+    get:
+      description: "Получение события по UID"
+      parameters:
+        - name: "uid"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+        - name: "Authorization"
+          in: "header"
+          required: false
+          schema:
+            type: "string"
+        - name: "calendarId"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+      responses:
+        "400":
+          description: "Bad Request"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiResponse_String"
+              examples:
+                Example#1:
+                  description: ""
+                  value:
+                    success: false
+                    data: "null"
+                    message: "Заголовок CAL_ID обязателен"
+                Example#2:
+                  description: ""
+                  value:
+                    success: false
+                    data: "null"
+                    message: "UID события не указан"
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiResponse_EventResponse"
+              examples:
+                Example#1:
+                  description: ""
+                  value:
+                    success: true
+                    data: "null"
+                    message: "null"
+        "404":
+          description: "Not Found"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiResponse_String"
+              examples:
+                Example#1:
+                  description: ""
+                  value:
+                    success: false
+                    data: "null"
+                    message: "null"
+                Example#2:
+                  description: ""
+                  value:
+                    success: false
+                    data: "null"
+                    message: "Событие не найдено"
+        "401":
+          description: "Unauthorized"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiResponse_String"
+              examples:
+                Example#1:
+                  description: ""
+                  value:
+                    success: false
+                    data: "null"
+                    message: "null"
+        "403":
+          description: "Forbidden"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiResponse_String"
+              examples:
+                Example#1:
+                  description: ""
+                  value:
+                    success: false
+                    data: "null"
+                    message: "null"
+        "500":
+          description: "Internal Server Error"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiResponse_String"
+              examples:
+                Example#1:
+                  description: ""
+                  value:
+                    success: false
+                    data: "null"
+                    message: "null"
+                Example#2:
+                  description: ""
+                  value:
+                    success: false
+                    data: "null"
+                    message: "null"
+    put:
+      description: "Обновление события"
+      parameters:
+        - name: "uid"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+        - name: "Authorization"
+          in: "header"
+          required: false
+          schema:
+            type: "string"
+        - name: "calendarId"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateEventRequest"
+        required: true
+      responses:
+        "400":
+          description: "Bad Request"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiResponse_String"
+              examples:
+                Example#1:
+                  description: ""
+                  value:
+                    success: false
+                    data: "null"
+                    message: "null"
+                Example#2:
+                  description: ""
+                  value:
+                    success: false
+                    data: "null"
+                    message: "Заголовок CAL_ID обязателен"
+                Example#3:
+                  description: ""
+                  value:
+                    success: false
+                    data: "null"
+                    message: "UID события не указан"
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiResponse_EventResponse"
+              examples:
+                Example#1:
+                  description: ""
+                  value:
+                    success: true
+                    data: "null"
+                    message: "null"
+        "401":
+          description: "Unauthorized"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiResponse_String"
+              examples:
+                Example#1:
+                  description: ""
+                  value:
+                    success: false
+                    data: "null"
+                    message: "null"
+        "403":
+          description: "Forbidden"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiResponse_String"
+              examples:
+                Example#1:
+                  description: ""
+                  value:
+                    success: false
+                    data: "null"
+                    message: "null"
+        "404":
+          description: "Not Found"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiResponse_String"
+              examples:
+                Example#1:
+                  description: ""
+                  value:
+                    success: false
+                    data: "null"
+                    message: "null"
+        "412":
+          description: "Precondition Failed"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiResponse_String"
+              examples:
+                Example#1:
+                  description: ""
+                  value:
+                    success: false
+                    data: "null"
+                    message: "null"
+        "500":
+          description: "Internal Server Error"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiResponse_String"
+              examples:
+                Example#1:
+                  description: ""
+                  value:
+                    success: false
+                    data: "null"
+                    message: "null"
+components:
+  schemas:
+    ApiResponse:
+      type: "object"
+      properties:
+        success:
+          type: "boolean"
+        message:
+          type: "string"
+          nullable: true
+      required:
+        - "success"
+    ApiResponse_String:
+      type: "object"
+      properties:
+        success:
+          type: "boolean"
+        data:
+          type: "string"
+        message:
+          type: "string"
+    EventResponse:
+      type: "object"
+      properties:
+        uid:
+          type: "string"
+        summary:
+          type: "string"
+        description:
+          type: "string"
+          nullable: true
+        startDateTime:
+          type: "string"
+        endDateTime:
+          type: "string"
+        location:
+          type: "string"
+          nullable: true
+      required:
+        - "uid"
+        - "summary"
+        - "startDateTime"
+        - "endDateTime"
+    ApiResponse_List<? extends EventResponse>:
+      type: "object"
+      properties:
+        success:
+          type: "boolean"
+        data:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/EventResponse"
+        message:
+          type: "string"
+    CreateEventRequest:
+      type: "object"
+      properties:
+        summary:
+          type: "string"
+        description:
+          type: "string"
+          nullable: true
+        startDateTime:
+          type: "string"
+        endDateTime:
+          type: "string"
+        location:
+          type: "string"
+          nullable: true
+      required:
+        - "summary"
+        - "startDateTime"
+        - "endDateTime"
+    ApiResponse_EventResponse:
+      type: "object"
+      properties:
+        success:
+          type: "boolean"
+        data:
+          $ref: "#/components/schemas/EventResponse"
+        message:
+          type: "string"
