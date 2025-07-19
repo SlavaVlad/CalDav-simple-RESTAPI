@@ -5,7 +5,13 @@ plugins {
 }
 
 group = "com.nano"
-version = "0.0.2"
+version = "0.0.3"
+
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(17))
+    }
+}
 
 application {
     mainClass = "com.nano.ApplicationKt"
@@ -34,4 +40,21 @@ dependencies {
 
     testImplementation("io.ktor:ktor-server-test-host")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:2.1.10")
+}
+
+ktor {
+    fatJar {
+        archiveFileName.set("webdav-service-fat.jar")
+    }
+}
+
+tasks.withType<Jar> {
+    manifest {
+        attributes(
+            mapOf(
+                "Main-Class" to application.mainClass.get(),
+                "Implementation-Version" to version
+            )
+        )
+    }
 }

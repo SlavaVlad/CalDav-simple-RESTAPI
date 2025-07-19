@@ -67,30 +67,56 @@ fun Application.configureRouting() {
                                 ApiResponse<String>(success = false, message = "Не найден параметр calendarId")
                             )
 
+                            // Получаем параметры фильтрации по датам (если они указаны)
+                            val startDateParam = call.request.queryParameters["startDate"]
+                            val endDateParam = call.request.queryParameters["endDate"]
+
+                            var startDate: LocalDateTime? = null
+                            var endDate: LocalDateTime? = null
+
+                            try {
+                                if (startDateParam != null) {
+                                    startDate = LocalDateTime.parse(startDateParam)
+                                }
+                                if (endDateParam != null) {
+                                    endDate = LocalDateTime.parse(endDateParam)
+                                }
+                            } catch (e: Exception) {
+                                return@get call.respond(
+                                    HttpStatusCode.BadRequest,
+                                    ApiResponse<String>(success = false, message = "Некорректный формат даты. Используйте формат ISO: YYYY-MM-DDTHH:mm:ss")
+                                )
+                            }
+
                             val dav = Dav(username, password, calendarId)
                             val eventManager = dav.getEventManager()
 
-                            eventManager.getAllEvents().fold(
-                                onSuccess = { events ->
-                                    val eventResponses = events.map { event ->
-                                        EventResponse(
-                                            uid = event.uid,
-                                            summary = event.summary,
-                                            description = event.description,
-                                            startDateTime = event.startDateTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME),
-                                            endDateTime = event.endDateTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME),
-                                            location = event.location
+                            // Получаем события с учетом фильтрации по датам
+                            val events = when {
+                                startDate != null && endDate != null -> {
+                                    eventManager.getEventsByDateRange(startDate, endDate)
+                                }
+                                else -> {
+                                    eventManager.getAllEvents().getOrElse {
+                                        return@get call.respond(
+                                            HttpStatusCode.InternalServerError,
+                                            ApiResponse<String>(success = false, message = it.message)
                                         )
                                     }
-                                    call.respond(ApiResponse(success = true, data = eventResponses))
-                                },
-                                onFailure = { error ->
-                                    call.respond(
-                                        HttpStatusCode.InternalServerError,
-                                        ApiResponse<String>(success = false, message = error.message)
-                                    )
                                 }
-                            )
+                            }
+
+                            val eventResponses = events.map { event ->
+                                EventResponse(
+                                    uid = event.uid,
+                                    summary = event.summary,
+                                    description = event.description,
+                                    startDateTime = event.startDateTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME),
+                                    endDateTime = event.endDateTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME),
+                                    location = event.location
+                                )
+                            }
+                            call.respond(ApiResponse(success = true, data = eventResponses))
                         } catch (e: Exception) {
                             call.respond(
                                 HttpStatusCode.InternalServerError,

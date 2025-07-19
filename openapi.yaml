@@ -9,7 +9,7 @@ servers:
 paths:
   /calendar/{calendarId}/events:
     get:
-      description: "Получение всех событий"
+      description: "Получение всех событий с возможностью фильтрации по дате"
       parameters:
         - name: "Authorization"
           in: "header"
@@ -19,6 +19,18 @@ paths:
         - name: "calendarId"
           in: "path"
           required: true
+          schema:
+            type: "string"
+        - name: "startDate"
+          in: "query"
+          required: false
+          description: "Начальная дата для фильтрации событий (ISO формат: YYYY-MM-DDTHH:mm:ss)"
+          schema:
+            type: "string"
+        - name: "endDate"
+          in: "query"
+          required: false
+          description: "Конечная дата для фильтрации событий (ISO формат: YYYY-MM-DDTHH:mm:ss)"
           schema:
             type: "string"
       responses:
