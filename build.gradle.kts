@@ -34,6 +34,7 @@ dependencies {
     implementation("io.ktor:ktor-server-content-negotiation")
     implementation("io.ktor:ktor-serialization-kotlinx-json")
     implementation("io.ktor:ktor-server-netty")
+    implementation("io.ktor:ktor-server-swagger")
     implementation("ch.qos.logback:logback-classic:1.5.13")
     implementation("com.github.bitfireAT:dav4jvm:2.2.1")
     implementation("io.ktor:ktor-client-logging:3.2.2")
